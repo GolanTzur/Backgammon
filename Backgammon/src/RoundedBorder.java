@@ -1,4 +1,4 @@
-import java.awt.Component;
+import java.awt.*;
 import java.awt.Graphics;
 import java.awt.Insets;
 
@@ -19,7 +19,7 @@ class RoundedBorder implements Border
     }
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height)
     {
-        g.drawRoundRect(x, y, width-1, height-1, r, r);
+       g.drawRoundRect(x, y, width-1, height-1, r, r);
     }
 	
 }

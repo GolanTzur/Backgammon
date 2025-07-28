@@ -131,7 +131,7 @@ public class Picture extends JPanel implements MouseListener{
 	{
 		if(c==Color.black)
 		{
-		this.rollbutton.setVisible(true);
+		//this.rollbutton.setVisible(true);
 		gamew.getSp().setBlueturn(true);
 		gamew.getSp().repaint();
 		this.g.setIsblueturn(true);
@@ -139,7 +139,7 @@ public class Picture extends JPanel implements MouseListener{
 		}
 		else
 		{
-			this.rollbutton.setVisible(true);
+			//this.rollbutton.setVisible(true);
 			gamew.getSp().setBlueturn(false);
 			gamew.getSp().repaint();
 			this.g.setIsblueturn(false);
@@ -151,7 +151,7 @@ public class Picture extends JPanel implements MouseListener{
 	{
 		
 		Picture jl= new Picture(1);
-	    menuw= new JFrame("Start");
+	    menuw= new JFrame("Backgammon");
 		menuw.setSize(1200,Placements.windowmenuheight);
 	    MyButton b1=new MyButton(200,120,"Play");
 		MyButton b2=new MyButton(200,120,"Scores");
@@ -170,7 +170,7 @@ public class Picture extends JPanel implements MouseListener{
 	public static void GameWindow()
 	{
 		menuw.setVisible(false);
-		gamew= new ExtendedFrame("Start");
+		gamew= new ExtendedFrame("Game");
 		gamew.setLayout(null);
 		gamew.setSize(1200,Placements.gamewindowheight);
 		Picture jl= new Picture(2);//Game Panel
@@ -190,6 +190,7 @@ public class Picture extends JPanel implements MouseListener{
 		jl.setBounds(Placements.mainpnlposx,Placements.mainpnlposy, Placements.mainpnlsizewidth, Placements.mainpnlsizeheight);
 		jl.rollbutton.addActionListener(new ActionListener() {          
 		    public void actionPerformed(ActionEvent e) {
+		    	boolean wait=false; //Wait if no legal moves
 		        jl.getG().RollDices();
 		        jl.rollbutton.setVisible(false);
 		        if(jl.getG().Isblueturn())
@@ -200,7 +201,11 @@ public class Picture extends JPanel implements MouseListener{
 		        		{
 		        	try {
 						if(jl.getG().AvailableSwitchWholeBoard(Color.blue)==false)//No Possible Move
-						jl.EndOfTurn(Color.blue);
+						{
+							wait=true;
+							jl.EndOfTurn(Color.blue);
+							jl.repaint();
+						}
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -210,7 +215,13 @@ public class Picture extends JPanel implements MouseListener{
 		        		{
 		        			try {
 								if(jl.getG().AvailableEatMove(Color.blue)==false&&jl.getG().AvailableSwitchWholeBoard(Color.blue)==false)
+								{
+									System.out.println("inside capture - no move for blue");
+									jl.repaint();
+									wait=true;
 									jl.EndOfTurn(Color.blue);
+								}
+									
 							} catch (InterruptedException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -219,15 +230,16 @@ public class Picture extends JPanel implements MouseListener{
 		        	}
 		        	else//There Are blue eaten pins
 		        	{
+		        		
 		        		try {
 							if(jl.getG().AvailableSwitchEatenPin(Color.blue))
 							jl.getG().setMarkcode(24);
 							else
 							{
-								System.out.println("no moves available");
-							jl.EndOfTurn(Color.blue);
-							jl.rollbutton.setVisible(true);
 							
+							wait=true;
+							jl.EndOfTurn(Color.blue);
+							jl.repaint();
 							}
 						} catch (InterruptedException e1) {
 							// TODO Auto-generated catch block
@@ -237,13 +249,19 @@ public class Picture extends JPanel implements MouseListener{
 		        }
 		        else//Black's turn
 		        {
+		        	System.out.println("black");
 		        	if(jl.getG().getP2().getEatenpins()==0)
 		        	{
 		        		if(jl.getG().getP2().isEatingmode()==false)
 		        		{
 		        	try {
 						if(jl.getG().AvailableSwitchWholeBoard(Color.black)==false)//No Possible Move
-						jl.EndOfTurn(Color.black);
+						{
+							System.out.println("no moves for black");
+							wait=true;
+							jl.EndOfTurn(Color.black);
+							jl.repaint();
+						}
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -253,7 +271,12 @@ public class Picture extends JPanel implements MouseListener{
 		        		{
 		        			try {
 								if(jl.getG().AvailableEatMove(Color.black)==false&&jl.getG().AvailableSwitchWholeBoard(Color.black)==false)
+								{
+									System.out.println("inside capture - no move for black");
+									jl.repaint();
+									wait=true;
 									jl.EndOfTurn(Color.black);
+								}
 							} catch (InterruptedException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -262,14 +285,16 @@ public class Picture extends JPanel implements MouseListener{
 		        	}
 		        	else//There Are black eaten pins
 		        	{
+		        		System.out.println("before available switch: "+jl.getG().getPlays().size());	
 		        		try {
 							if(jl.getG().AvailableSwitchEatenPin(Color.black))
 							jl.getG().setMarkcode(25);
 							else
 							{
-							System.out.println("no moves available");
+							
+						    wait=true;
 							jl.EndOfTurn(Color.black);
-							jl.rollbutton.setVisible(true);
+							jl.repaint();
 							
 							}
 						} catch (InterruptedException e1) {
@@ -278,8 +303,18 @@ public class Picture extends JPanel implements MouseListener{
 						}
 		        	}
 		        }
-		        
-		        	
+		        if(wait==true)
+		        {
+		        	javax.swing.Timer timer = new javax.swing.Timer(2000, evt -> {
+		        	    jl.getG().getPlays().removeAllElements();
+		        	    jl.rollbutton.setVisible(true);
+		        	    jl.repaint();
+		        	});
+		        	timer.setRepeats(false);  
+		        	timer.start(); 
+		        	 wait=false;
+		        }
+		        else
 		        jl.repaint();
 		    }});
 		back.addActionListener(new ActionListener() {          
@@ -312,14 +347,13 @@ public class Picture extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		
+		boolean wait=false; //wait before no available moves
 		if(this.getG().Isrolled()==true)//Check if the Dice is rolled
 		{
 			
 		if(this.getG().Isblueturn()==true)//Check who's turn
 		{
 			int row=this.g.GetRow(e.getX(), e.getY());
-			//System.out.println("row entered "+row);
 			if(this.g.getMarkcode()!=24)//No Blue eaten pins
 			{
 			if(row!=-1)//Check if the Click is valid
@@ -331,8 +365,7 @@ public class Picture extends JPanel implements MouseListener{
 				if(this.g.getP1().getScore()==15)//Blue Wins
 				{
 					repaint();
-					int i=JOptionPane.showConfirmDialog(this, "Blue Wins","Game Over",JOptionPane.YES_OPTION);
-					if(i==JOptionPane.YES_OPTION)
+					JOptionPane.showMessageDialog(this, "Blue Wins", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 					{
 						gamew.setVisible(false);
 				        MenuWindow();
@@ -342,6 +375,13 @@ public class Picture extends JPanel implements MouseListener{
 						try {
 							if(this.g.getPlays().size()==0||(!(this.g.AvailableEatMove(Color.blue))&&!(this.g.AvailableSwitchWholeBoard(Color.blue))))
 							{
+								if(this.g.getPlays().size()>0)//--
+								{
+									repaint();
+									wait=true;
+								}
+								else
+									this.rollbutton.setVisible(true);
 								this.EndOfTurn(Color.blue);
 							}
 						} catch (InterruptedException e1) {
@@ -359,14 +399,11 @@ public class Picture extends JPanel implements MouseListener{
 				{
 					this.g.getBoard()[row].setIsmarked(true);
 					this.g.setMarkcode(row);
-					//System.out.println("sou "+row);
 				}
 			}
 			else//In Case there's a marked pin already
 			{
 				int prvrow=this.g.getMarkcode();//The row index of the previous click
-				//System.out.println("des "+row);
-				//System.out.println("sou "+prvrow);
 				if(row==prvrow)//Cancel the mark
 				{
 					this.g.getBoard()[row].setIsmarked(false);
@@ -381,7 +418,19 @@ public class Picture extends JPanel implements MouseListener{
 					this.g.setMarkcode(-1);
 					try {
 						if(this.g.EndOfTurn(Color.blue))
-						this.EndOfTurn(Color.blue);
+						{
+							if(this.g.getPlays().size()>0)
+							{
+								repaint();
+								wait=true;
+							}
+							else
+							{
+								this.rollbutton.setVisible(true);
+							}
+							this.EndOfTurn(Color.blue);
+						}
+						
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -399,23 +448,28 @@ public class Picture extends JPanel implements MouseListener{
 				{
 					try {
 						if(!this.g.AvailableSwitchEatenPin(Color.blue))
-						this.EndOfTurn(Color.blue);
+						{
+							repaint();
+							wait=true;
+							this.EndOfTurn(Color.blue);
+						}
 						else//There are possible moves
 						{
-							//System.out.println("There are possible moves for blue");
 							if(this.g.SwitchEatenPin(Color.blue, row))//The Switch is valid
 							{
 								 if(this.g.calculateEatingMode(Color.blue)==true)//Checking whether the blue enters eating mode
 								    	this.g.getP1().setEatingmode(true);
 								if(this.g.getPlays().size()==0)//No turns left
 								{
-									//System.out.println("End of the turn after eating");
 									this.EndOfTurn(Color.blue);
+									this.rollbutton.setVisible(true);
 								}
 								else if(this.g.getP1().getEatenpins()!=0)//There are turns left and eaten pins for the blue
 								{
 									if(!this.g.AvailableSwitchEatenPin(Color.blue))
 									{
+										repaint();
+										wait=true;
 										this.EndOfTurn(Color.blue);
 									}
 								}
@@ -428,6 +482,8 @@ public class Picture extends JPanel implements MouseListener{
 									}
 									else
 									{
+										repaint();
+										wait=true;
 										this.EndOfTurn(Color.blue);
 									}
 									}
@@ -450,7 +506,6 @@ public class Picture extends JPanel implements MouseListener{
 		else//Black's turn
 		{
 			int row=this.g.GetRow(e.getX(), e.getY());
-			//System.out.println("row entered "+row);
 			if(this.g.getMarkcode()!=25)// No Black eaten pins
 			{
 			if(row!=-1)//Check if the Click is valid
@@ -461,8 +516,7 @@ public class Picture extends JPanel implements MouseListener{
 					if(this.g.getP2().getScore()==15)//Blue Wins
 					{
 						repaint();
-						int i=JOptionPane.showConfirmDialog(this, "Black Wins","Game Over",JOptionPane.YES_OPTION);
-						if(i==JOptionPane.YES_OPTION)
+						JOptionPane.showMessageDialog(this, "Black Wins", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 						{
 							gamew.setVisible(false);
 					        MenuWindow();
@@ -472,6 +526,14 @@ public class Picture extends JPanel implements MouseListener{
 						try {
 							if(this.g.getPlays().size()==0||(!(this.g.AvailableEatMove(Color.black))&&!(this.g.AvailableSwitchWholeBoard(Color.black))))
 							{
+								if(this.g.getPlays().size()>0)
+								{
+									repaint();
+									wait=true;
+								}
+								else
+								this.rollbutton.setVisible(true);
+								
 								this.EndOfTurn(Color.black);
 							}
 						} catch (InterruptedException e1) {
@@ -487,14 +549,11 @@ public class Picture extends JPanel implements MouseListener{
 				{
 					this.g.getBoard()[row].setIsmarked(true);
 					this.g.setMarkcode(row);
-					//System.out.println("sou "+row);
 				}
 			}
 			else//In Case there's a marked pin already
 			{
 				int prvrow=this.g.getMarkcode();//The row index of the previous click
-				//System.out.println("des "+row);
-				//System.out.println("sou "+prvrow);
 				if(row==prvrow)//Cancel the mark
 				{
 					this.g.getBoard()[row].setIsmarked(false);
@@ -511,12 +570,22 @@ public class Picture extends JPanel implements MouseListener{
 					this.g.setMarkcode(-1);
 					try {
 						if(this.g.EndOfTurn(Color.black))
+						{
+							if(this.g.getPlays().size()>0)
+							{
+								repaint();
+								wait=true;
+							}
+							else
+								this.rollbutton.setVisible(true);
+							
 							this.EndOfTurn(Color.black);
+						}
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					repaint();
+					
 		            }
 				}
 			}
@@ -528,23 +597,28 @@ public class Picture extends JPanel implements MouseListener{
 			else //There are Black eaten pins
 			{
 				try {
-					if(!this.g.AvailableSwitchEatenPin(Color.black))
-					this.EndOfTurn(Color.black);
+					if(!this.g.AvailableSwitchEatenPin(Color.black))//--
+					{
+						repaint();
+						wait=true;
+						this.EndOfTurn(Color.black);
+					}
 					else//There are possible moves
 					{
-						//System.out.println("There are possible moves for blue");
 						if(this.g.SwitchEatenPin(Color.black, row))//The Switch is valid
 						{
 							
 							if(this.g.getPlays().size()==0)//No turns left
 							{
-								//System.out.println("End of the turn after eating");
 								this.EndOfTurn(Color.black);
+								this.rollbutton.setVisible(true);
 							}
 							else if(this.g.getP2().getEatenpins()!=0)//There are turns left and eaten pins for the black
 							{
-								if(!this.g.AvailableSwitchEatenPin(Color.black))
+								if(!this.g.AvailableSwitchEatenPin(Color.black))//--
 								{
+									repaint();
+									wait=true;
 									this.EndOfTurn(Color.black);
 								}
 							}
@@ -553,10 +627,11 @@ public class Picture extends JPanel implements MouseListener{
 								if(!this.g.EndOfTurn(Color.black))// There are available switches on the board after eaten mode
 								{
 								this.g.setMarkcode(-1);
-								//System.out.println("marked code -1");
 								}
 								else
 								{
+									repaint();
+									wait=true;
 									this.EndOfTurn(Color.black);
 								}
 								}
@@ -575,8 +650,19 @@ public class Picture extends JPanel implements MouseListener{
 		
 		}
 		
-		//System.out.println("marked code "+this.getG().getMarkcode());
-		repaint();
+		if(wait==true)
+        {
+			javax.swing.Timer timer = new javax.swing.Timer(2000, evt -> {
+			    this.getG().getPlays().removeAllElements();
+			    this.rollbutton.setVisible(true);
+			    this.repaint();
+			});
+			timer.setRepeats(false);  
+			timer.start(); 
+        	 wait=false;
+        }
+        else
+        this.repaint();
 		}
 	}
 	

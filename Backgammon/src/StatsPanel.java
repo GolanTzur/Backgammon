@@ -70,9 +70,9 @@ public class StatsPanel extends JPanel {
 	    f = new Font("Comic Sans MS", Font.TYPE1_FONT,20);
 	    g.setFont(f);
 	    if(blueturn)
-	    g.drawString("Player 1's turn",600 ,(int)this.getSize().getHeight()/2);
+	    g.drawString("Player 1's turn",550 ,(int)this.getSize().getHeight()/2);
 	    else
-	    g.drawString("Player 2's turn",600 ,(int)this.getSize().getHeight()/2);	
+	    g.drawString("Player 2's turn",550 ,(int)this.getSize().getHeight()/2);
 		
 	}
 	public void SetButtonLocation(JButton j,int x,int y)

@@ -342,9 +342,9 @@ private Player p2;
         			}
         		}
     		}
-    		java.util.concurrent.TimeUnit.SECONDS.sleep(3);
+    		/*java.util.concurrent.TimeUnit.SECONDS.sleep(3);
     		this.plays.removeAllElements();
-    		this.setIsrolled(false);
+    		this.setIsrolled(false);*/
     		//System.out.println("no move available");
     	    return false;
     }
@@ -352,7 +352,7 @@ private Player p2;
     {
     	if(c==Color.blue)
     	{
-    		if(to<24)//Out of bounds
+    		if(to<24)//Out of bounds Checking
     		{
     		if(this.getBoard()[to].getC()==c||this.getBoard()[to].getAmount()==0||(this.getBoard()[to].getC()==Color.black&&this.getBoard()[to].getAmount()==1))
     		return true;
@@ -360,7 +360,7 @@ private Player p2;
     	}
     	else if(c==Color.black)
     	{
-    		if(to>0)//Out of bounds
+    		if(to>=0)//Out of bounds Checking
     		{
         		if(this.getBoard()[to].getC()==c||this.getBoard()[to].getAmount()==0||(this.getBoard()[to].getC()==Color.blue&&this.getBoard()[to].getAmount()==1))
         		return true;
@@ -476,8 +476,8 @@ private Player p2;
     		}
     	}
     	}
-    	java.util.concurrent.TimeUnit.SECONDS.sleep(3);
-    	this.plays.removeAllElements();
+    	/*java.util.concurrent.TimeUnit.SECONDS.sleep(3);
+    	this.plays.removeAllElements();*/
 		//System.out.println("no move available eaten pins");
     	return false;
     }

@@ -1,4 +1,6 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -39,6 +41,7 @@ public class MyButton extends JButton
 	}
 
 	public MyButton(String text, Icon icon) {
+		
 		super(text, icon);
 		// TODO Auto-generated constructor stub
 	}
@@ -52,7 +55,7 @@ public class MyButton extends JButton
 	      }
 	      else if(this.getLabel()=="Roll")
 	      {
-	    	  this.setBorder(new RoundedBorder(70));
+	    	  setContentAreaFilled(false);
 	    	  paintRollButton(g2);
 	      }
 	      g2.dispose();
@@ -78,4 +81,17 @@ public class MyButton extends JButton
 	     g.drawString(getText(),(int)this.getSize().getWidth()/3,(int)this.getSize().getHeight()/2);
 		
 	}
+	public void paintBorder(Component c, Graphics g, int x, int y, int width, int height)
+    {
+       // g.drawRoundRect(x, y, width-1, height-1, r, r);
+		if(this.getLabel()=="Roll")
+		{
+        System.out.println("roll");
+    	Graphics2D g2 = (Graphics2D) g.create();
+        g2.setColor(getForeground());
+        g2.setStroke(new BasicStroke(2));
+        g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 30, 30);
+        g2.dispose();
+		}
+    }
 }
