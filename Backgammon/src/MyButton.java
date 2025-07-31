@@ -49,7 +49,7 @@ public class MyButton extends JButton
 	public void paintComponent(Graphics g)
 	{
 	      Graphics2D g2 = (Graphics2D) g.create();
-	      if(this.getLabel()=="Scores"||this.getLabel()=="Play")
+	      if(this.getLabel()=="Scores"||this.getLabel()=="Play"||this.getLabel()=="Back")
 	      {
 	    	  paintScoresPlayButtons(g2);
 	      }

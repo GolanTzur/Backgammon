@@ -12,7 +12,7 @@ public class Placements
 	public static final int windowmenubutton1y=300;
 	public static final int windowmenubutton2x=950;
 	public static final int windowmenubutton2y=300;
-	
+
 	public static final int statspnlsizewidth=1200;
 	public static final int statspnlposx=0;
 	public static final int statspnlposy=0;
@@ -20,7 +20,7 @@ public class Placements
 	public static final int statspnlpl2scorex=1000;
 	public static final int statspnlbackbuttonx=300;
 	public static final int statspnlbackbuttony=10;
-	
+
 	public static final int mainpnlsizewidth=1200;
 	public static final int mainpnlposx=0;
 	public static final int mainpnlposy=50;
@@ -36,17 +36,30 @@ public class Placements
 	public static final int mainpnleatenpinsyblue=385;
 	public static final int mainpnleatenpinsyblack=150;
 	public static Rectangle[] rowpositions;
-	
+
 	public static final int gamewindowheight=700;
 	public static final int statspnlsizeheight=50;
 	public static final int mainpnlsizeheight=650;
 	public static final int windowmenuheight=700;
-	
-	
+
+	public static final int scoreswindowheight=700;
+	public static final int scorewindowwidth=1200;
+	public static final int scoreswindowx=0;
+	public static final int scorewindowy=0;
+    public static final int scorebackbuttonx=550;
+	public static final int scorebackbuttony=600;
+	public static final int scorestatsx=50;
+	public static final int scoresheadliney=150;
+	public static final int scoreslastgamesx=190;
+	public static final int scoresallgamesx=500;
+	public static final int scoreshistoryx=900;
+	public static final int scoressmallverticalspace=20;
+	public static final int scoreslargeverticalspace=30;
+	public static final int scoressmallhorizontalspace=45;
 
 	public Placements()
 	{
-		
+
 	}
 
 }

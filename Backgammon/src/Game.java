@@ -12,11 +12,10 @@ private boolean isblueturn;
 private Vector<Integer>plays;
 private Player p1;
 private Player p2;
-
+private GameStats stats;
 
     public Game()
 	{
-    	
 		this.dice1=0;
 		this.dice2=0;
 		this.isrolled=false;
@@ -50,8 +49,9 @@ private Player p2;
 		this.board[18]=new Row(Color.BLUE,5);
 		this.board[23]=new Row(Color.BLACK,2);
 		InitRowPositions();
-		
+		this.stats=new GameStats();
 	}
+
     public void InitRowPositions()
     {
     	
@@ -587,6 +587,7 @@ private Player p2;
     		{
     			this.board[index].Detract();
     			this.getP1().setScore(this.getP1().getScore()+1);
+				this.getGameStats().getScores()[0][0]++;
     			int ii =this.plays.indexOf(diceindex);
     			this.plays.remove(ii);
     			return true;
@@ -605,6 +606,7 @@ private Player p2;
     			    		//System.out.println(i+" is compatible ");
     		    			this.board[index].Detract();
     		    			this.getP1().setScore(this.getP1().getScore()+1);
+							this.getGameStats().getScores()[0][0]++;
     		    			int ii =this.plays.indexOf(i);
     		    			this.plays.remove(ii);
     		    			return true;
@@ -623,6 +625,7 @@ private Player p2;
     		{
     			this.board[index].Detract();
     			this.getP2().setScore(this.getP2().getScore()+1);
+				this.getGameStats().getScores()[0][1]++;
     			int ii =this.plays.indexOf(diceindex);
     			this.plays.remove(ii);
     			return true;
@@ -641,6 +644,7 @@ private Player p2;
     			    		System.out.println(i+" is compatible ");
     		    			this.board[index].Detract();
     		    			this.getP2().setScore(this.getP2().getScore()+1);
+							this.getGameStats().getScores()[0][1]++;
     		    			int ii =this.plays.indexOf(i);
     		    			this.plays.remove(ii);
     		    			return true;
@@ -705,6 +709,8 @@ private Player p2;
 	public void RollDices()
 	{
 		int max=6, min=1;
+		boolean doublemode;
+		int sumdices;
 		Random r=new Random();
 		this.dice1=r.nextInt(max - min + 1) + min;
 		this.dice2=r.nextInt(max - min + 1) + min;
@@ -715,11 +721,27 @@ private Player p2;
 			this.plays.add(this.dice1);
 			this.plays.add(this.dice1);
 			this.plays.add(this.dice1);
+			doublemode=true;
+			sumdices=4*dice1;
 		}
 		else
 		{
 			this.plays.add(this.dice1);
 			this.plays.add(this.dice2);
+			doublemode=false;
+			sumdices=dice1+dice2;
+		}
+		if(this.isblueturn==true)
+		{
+			this.getGameStats().getScores()[1][0]++;
+			this.getGameStats().getScores()[2][0]+=sumdices;
+			if(doublemode==true) this.getGameStats().getScores()[3][0]++;
+		}
+		else
+		{
+			this.getGameStats().getScores()[1][1]++;
+			this.getGameStats().getScores()[2][1]+=sumdices;
+			if(doublemode==true) this.getGameStats().getScores()[3][1]++;
 		}
 		this.isrolled=true;
 	}
@@ -739,5 +761,5 @@ private Player p2;
 	public Row[] getBoard() {
 		return board;
 	}
-
+    public GameStats getGameStats() {return stats;}
 }
