@@ -19,6 +19,7 @@ public class GameStats {
 
         //for(int i = 0; i < 4; i++) {for(int j = 0; j < 2;j++) {this.scores[i][j] = 0;}}
     }
+    public GameStats(LocalDate gameDate) {this.gameDate=gameDate;this.scores=new int [4][2];}
     public int[][]  getScores() {
         return this.scores;
     }
@@ -77,13 +78,13 @@ public class GameStats {
             is.read();
             is.read();
             value=is.read();
-            GameStats gs=new GameStats();
             int day=value;
             value=dis.readInt();
             int month=value;
             value=dis.readInt();
             int year=value;
             LocalDate ld=LocalDate.of(year,month,day);
+            GameStats gs=new GameStats(ld);
             for(int i=0;i<4;i++)for(int j=0;j<2;j++){value=dis.readInt(); gs.getScores()[i][j]=value;}
             prevgames.addLast(gs);
         }
